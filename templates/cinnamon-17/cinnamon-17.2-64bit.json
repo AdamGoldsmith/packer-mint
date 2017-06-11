@@ -1,0 +1,81 @@
+{
+  "variables": {
+    "version": "0.1.0",
+    "cm": "nocm",
+    "cm_version": "",
+    "cleanup_pause": "",
+    "headless": "",
+    "update": "false",
+    "ssh_username": "vagrant",
+    "ssh_password": "vagrant",
+    "install_vagrant_key": "true",
+    "http_proxy": "{{env `http_proxy`}}",
+    "https_proxy": "{{env `https_proxy`}}",
+    "ftp_proxy": "{{env `ftp_proxy`}}",
+    "rsync_proxy": "{{env `rsync_proxy`}}",
+    "no_proxy": "{{env `no_proxy`}}",
+    "iso_url": "http://mirror.netcologne.de/linuxmint/iso//stable/17.2/linuxmint-17.2-cinnamon-64bit.iso",
+    "iso_checksum": "59091061d3fb380a13938425274ff0399348a526",
+    "custom_script": "."
+  },
+  "builders": [{
+    "vm_name": "mint-cinnamon",
+    "type": "vmware-iso",
+    "guest_os_type": "ubuntu-64",
+    "http_directory": "http",
+    "iso_url": "{{ user `iso_url` }}",
+    "iso_checksum": "{{ user `iso_checksum` }}",
+    "iso_checksum_type": "sha1",
+    "ssh_username": "{{ user `ssh_username` }}",
+    "ssh_password": "{{ user `ssh_password` }}",
+    "ssh_wait_timeout": "10000s",
+    "headless": "{{ user `headless` }}",
+    "tools_upload_flavor": "linux",
+    "boot_command": [
+      "<esc><wait><esc><wait>",
+      "/casper/vmlinuz initrd=/casper/initrd.lz",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/mint-allinone.seed",
+      " boot=casper automatic-ubiquity quiet splash noprompt",
+      " -- ",
+      "<enter>"
+    ],
+    "shutdown_command": "echo 'vagrant'|sudo -S shutdown -P now",
+    "disk_size": 40960,
+    "vmx_data": {
+      "memsize": "1024",
+      "numvcpus": "2"
+    }
+  }],
+  "provisioners": [{
+    "type": "shell",
+    "environment_vars": [
+      "CM={{user `cm`}}",
+      "CM_VERSION={{user `cm_version`}}",
+      "CLEANUP_PAUSE={{user `cleanup_pause`}}",
+      "UPDATE={{user `update`}}",
+      "INSTALL_VAGRANT_KEY={{user `install_vagrant_key`}}",
+      "SSH_USERNAME={{user `ssh_username`}}",
+      "SSH_PASSWORD={{user `ssh_password`}}",
+      "http_proxy={{user `http_proxy`}}",
+      "https_proxy={{user `https_proxy`}}",
+      "ftp_proxy={{user `ftp_proxy`}}",
+      "rsync_proxy={{user `rsync_proxy`}}",
+      "no_proxy={{user `no_proxy`}}"
+    ],
+    "execute_command": "echo 'vagrant' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+    "scripts": [
+      "script/update.sh",
+      "script/vagrant.sh",
+      "script/sshd.sh",
+      "script/vmtool.sh",
+      "script/minimize.sh",
+      "script/cleanup.sh",
+      "script/cmtool.sh"
+    ]
+  }],
+  "post-processors": [{
+    "type": "vagrant",
+    "keep_input_artifact": false,
+    "output": "mint-cinnamon_17.2_{{.Provider}}.box"
+  }]
+}
