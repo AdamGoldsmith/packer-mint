@@ -1,49 +1,66 @@
-#Step 1
-d-i debian-installer/locale string en_GB.UTF-8
+# Partitioning
+ubiquity partman-auto/disk string /dev/sda
+ubiquity partman-auto/method string regular
+ubiquity partman-lvm/device_remove_lvm boolean true
+ubiquity partman-md/device_remove_md boolean true
+ubiquity partman-auto/choose_recipe select atomic
 
-#Step 2
-d-i time/zone string Europe/London
-
-#Step 3
-d-i console-setup/layoutcode string gb
-
-#Step 4
-d-i partman-auto/disk string /dev/sda
-d-i partman-auto/choose_recipe select atomic
-d-i partman/confirm_write_new_label boolean true
+# This makes partman automatically partition without confirmation
+d-i partman-partitioning/confirm_write_new_label boolean true
 d-i partman/choose_partition select finish
 d-i partman/confirm boolean true
-d-i partman-auto-lvm/guided_size string max
-d-i partman-auto/method string lvm
-d-i partman-lvm/confirm boolean true
-d-i partman-lvm/confirm_nooverwrite boolean true
-d-i partman-lvm/device_remove_lvm boolean true
 d-i partman/confirm_nooverwrite boolean true
-d-i grub-installer/only_debian boolean true
-d-i grub-installer/with_other_os boolean true
 
+# Locale
+d-i debian-installer/locale string en_GB
 d-i console-setup/ask_detect boolean false
-d-i keyboard-configuration/layoutcode string uk
+d-i console-setup/layoutcode string gb
+ubiquity languagechooser/language-name select English
+ubiquity countrychooser/shortlist select GB
+ubiquity keyboard-configuration/layoutcode select gb
+ubiquity keyboard-configuration/modelcode select pc105
+ubiquity localechooser/supported-locales multiselect en_GB.UTF8
+ubiquity console-keymaps-at/keymap select  us
+ubiquity console-keymaps-at/variant select  us
 
-#Step 5
-d-i passwd/user-fullname string vagrant
-d-i passwd/username string vagrant
-d-i passwd/user-password password vagrant
-d-i passwd/user-password-again password vagrant
+# Network
+d-i netcfg/get_hostname string packer-test
+d-i netcfg/get_domain string unassigned-domain
+d-i netcfg/choose_interface select auto
+
+# Clock
+d-i time/zone string Europe/London
+
+# Packages, Mirrors, Image
+d-i mirror/country string UK
+d-i apt-setup/multiverse boolean true
+d-i apt-setup/restricted boolean true
+d-i apt-setup/universe boolean true
+
+# Users
+d-i passwd/user-fullname string packer
+d-i passwd/username string packer
+d-i passwd/user-password password packer
+d-i passwd/user-password-again password packer
 d-i user-setup/allow-password-weak boolean true
 d-i netcfg/get_hostname string packer-test
 d-i passwd/auto-login boolean true
+d-i user-setup/encrypt-home boolean false
+
+# Grub
+d-i grub-installer/grub2_instead_of_grub_legacy boolean true
+d-i grub-installer/only_debian boolean true
+d-i finish-install/reboot_in_progress note
 
 # Use non-free packages
 ubiquity ubiquity/use_nonfree boolean true
 
-#if you want to start commands after the installation
-ubiquity ubiquity/success_command string in-target apt-get -y install openssh-server && /etc/init.d/ssh restart;
+ubiquity ubiquity/success_command \
+    string echo "auto enp0s3" >> /etc/network/interfaces; \
+           echo "iface enp0s3 inet dhcp" >> /etc/network/interfaces; \
+           ifup enp0s3; \
+           apt-get update -y; \
+           in-target apt-get install -y openssh-server;
 
-#Step 6
-ubiquity ubiquity/summary note
 ubiquity ubiquity/reboot boolean true
 
-languagechooser/language-name: English
-countrychooser/shortlist: GB
-localechooser/supported-locales: en_GB.UTF-8
