@@ -20,7 +20,7 @@
     "iso_checksum_type": "{{user `iso_checksum_type`}}",
     "ssh_username": "{{user `ssh_username`}}",
     "ssh_password": "{{user `ssh_pass`}}",
-    "ssh_wait_timeout": "5m",
+    "ssh_wait_timeout": "10m",
     "headless": "{{user `headless`}}",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
     "disk_size" : 10000,

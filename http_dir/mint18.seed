@@ -1,3 +1,15 @@
+# Locale
+d-i debian-installer/locale string en_GB
+d-i console-setup/ask_detect boolean false
+d-i console-setup/layoutcode string gb
+d-i languagechooser/language-name select English
+d-i countrychooser/shortlist select GB
+d-i keyboard-configuration/layoutcode select gb
+d-i keyboard-configuration/modelcode select pc105
+d-i localechooser/supported-locales multiselect en_GB.UTF8
+d-i console-keymaps-at/keymap select gb
+d-i console-keymaps-at/variant select gb
+
 # Partitioning
 ubiquity partman-auto/disk string /dev/sda
 ubiquity partman-auto/method string regular
@@ -10,18 +22,6 @@ d-i partman-partitioning/confirm_write_new_label boolean true
 d-i partman/choose_partition select finish
 d-i partman/confirm boolean true
 d-i partman/confirm_nooverwrite boolean true
-
-# Locale
-d-i debian-installer/locale string en_GB
-d-i console-setup/ask_detect boolean false
-d-i console-setup/layoutcode string gb
-ubiquity languagechooser/language-name select English
-ubiquity countrychooser/shortlist select GB
-ubiquity keyboard-configuration/layoutcode select gb
-ubiquity keyboard-configuration/modelcode select pc105
-ubiquity localechooser/supported-locales multiselect en_GB.UTF8
-ubiquity console-keymaps-at/keymap select gb
-ubiquity console-keymaps-at/variant select gb
 
 # Network
 d-i netcfg/get_hostname string packer-test
