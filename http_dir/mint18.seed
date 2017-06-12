@@ -20,8 +20,8 @@ ubiquity countrychooser/shortlist select GB
 ubiquity keyboard-configuration/layoutcode select gb
 ubiquity keyboard-configuration/modelcode select pc105
 ubiquity localechooser/supported-locales multiselect en_GB.UTF8
-ubiquity console-keymaps-at/keymap select  gb
-ubiquity console-keymaps-at/variant select  gb
+ubiquity console-keymaps-at/keymap select gb
+ubiquity console-keymaps-at/variant select gb
 
 # Network
 d-i netcfg/get_hostname string packer-test
