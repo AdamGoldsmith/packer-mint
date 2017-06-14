@@ -2,20 +2,20 @@
 d-i debian-installer/locale string en_GB
 d-i console-setup/ask_detect boolean false
 d-i console-setup/layoutcode string gb
-d-i languagechooser/language-name select English
-d-i countrychooser/shortlist select GB
-d-i keyboard-configuration/layoutcode select gb
-d-i keyboard-configuration/modelcode select pc105
-d-i localechooser/supported-locales multiselect en_GB.UTF8
-d-i console-keymaps-at/keymap select gb
-d-i console-keymaps-at/variant select gb
+ubiquity languagechooser/language-name select English
+ubiquity countrychooser/shortlist select GB
+ubiquity keyboard-configuration/layoutcode select gb
+ubiquity keyboard-configuration/modelcode select pc105
+ubiquity localechooser/supported-locales multiselect en_GB.UTF8
+ubiquity console-keymaps-at/keymap select gb
+ubiquity console-keymaps-at/variant select gb
 
 # Partitioning
 ubiquity partman-auto/disk string /dev/sda
 ubiquity partman-auto/method string regular
-ubiquity partman-lvm/device_remove_lvm boolean true
-ubiquity partman-md/device_remove_md boolean true
-ubiquity partman-auto/choose_recipe select atomic
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-md/device_remove_md boolean true
+d-i partman-auto/choose_recipe select atomic
 
 # This makes partman automatically partition without confirmation
 d-i partman-partitioning/confirm_write_new_label boolean true
