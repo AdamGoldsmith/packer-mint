@@ -56,11 +56,12 @@ d-i finish-install/reboot_in_progress note
 ubiquity ubiquity/use_nonfree boolean true
 
 ubiquity ubiquity/success_command \
-    string echo "auto enp0s3" >> /etc/network/interfaces; \
-           echo "iface enp0s3 inet dhcp" >> /etc/network/interfaces; \
-           ifup enp0s3; \
-           apt-get update -y; \
-           in-target apt-get install -y openssh-server;
+  string echo "auto enp0s3" >> /etc/network/interfaces; \
+    echo "iface enp0s3 inet dhcp" >> /etc/network/interfaces; \
+    ifup enp0s3; \
+    apt-get update -y; \
+    in-target apt-get install -y openssh-server; \
+    in-target apt-get install -y ansible;
 
 ubiquity ubiquity/reboot boolean true
 
