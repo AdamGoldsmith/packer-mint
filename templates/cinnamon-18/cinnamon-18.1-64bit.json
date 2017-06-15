@@ -37,5 +37,12 @@
     "vboxmanage": [
       ["modifyvm", "{{.Name}}", "--vram", "32"]
     ]
-  }]
+  }],
+
+  "provisioners": [
+    {
+      "type": "shell",
+      "inline": ["echo {{user `ssh_pass`}} | sudo -S apt-get install -y ansible"]
+    }
+  ]
 }
