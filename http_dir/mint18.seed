@@ -60,7 +60,7 @@ ubiquity ubiquity/success_command \
     echo "iface enp0s3 inet dhcp" >> /etc/network/interfaces; \
     ifup enp0s3; \
     apt-get update -y; \
-   in-target apt-get install -y openssh-server;
+    in-target apt-get install -y openssh-server;
 
 ubiquity ubiquity/reboot boolean true
 
