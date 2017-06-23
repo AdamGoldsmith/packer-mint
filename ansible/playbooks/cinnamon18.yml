@@ -1,0 +1,8 @@
+- hosts: all
+  gather_facts: true
+  become: true
+  become_method: sudo
+  tasks:
+  - name: install latest version of apache2
+    apt: name=apache2 update_cache=yes state=latest
+ 

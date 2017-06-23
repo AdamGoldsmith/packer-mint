@@ -3,6 +3,7 @@
     "headless": "",
     "ssh_username": "packer",
     "ssh_pass": "packer",
+    "ansible_user": "ansible",
     "hostname": "packer-test",
     "iso_url": "http://www.mirrorservice.org/sites/www.linuxmint.com/pub/linuxmint.com/stable/18.1/linuxmint-18.1-cinnamon-64bit.iso",
     "iso_checksum": "b99f4b98a1b41737ded072dc1a7060ca32224e23236074790d4fc86b51009e3c",
@@ -24,6 +25,7 @@
     "headless": "{{user `headless`}}",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
     "disk_size" : 10000,
+    "boot_wait" : "5s",
 
     "boot_command" : [
       "<esc><wait><tab><wait><leftCtrlOn>u<leftCtrlOff>",
@@ -42,7 +44,15 @@
   "provisioners": [
     {
       "type": "shell",
-      "inline": ["echo {{user `ssh_pass`}} | sudo -S apt-get install -y ansible"]
+      "execute_command": "echo '{{user `ssh_pass`}}' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "inline": [
+	"apt-get install -y ansible",
+        "echo '{{user `ssh_username`}} ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers"
+      ]
+    },
+    {
+      "type": "ansible-local",
+      "playbook_file": "ansible/playbooks/cinnamon18.yml"
     }
   ]
 }
