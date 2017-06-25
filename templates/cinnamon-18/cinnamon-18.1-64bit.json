@@ -6,7 +6,8 @@
     "hostname": "packer-test",
     "iso_url": "http://www.mirrorservice.org/sites/www.linuxmint.com/pub/linuxmint.com/stable/18.1/linuxmint-18.1-cinnamon-64bit.iso",
     "iso_checksum": "b99f4b98a1b41737ded072dc1a7060ca32224e23236074790d4fc86b51009e3c",
-    "iso_checksum_type": "sha256"
+    "iso_checksum_type": "sha256",
+    "scripts_dir": "scripts"
   },
 
   "builders": [{
@@ -60,7 +61,13 @@
       ]
     },
     {
+      "type": "shell",
+      "execute_command": "echo '{{user `ssh_pass`}}' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
+      "script": "{{user `scripts_dir`}}\\VBoxGuestAdditions.sh"
+    },
+    {
       "type": "ansible-local",
+      "command": "ANSIBLE_NOCOWS=1 ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook",
       "playbook_file": "ansible/playbooks/cinnamon18.yml"
     }
   ]
