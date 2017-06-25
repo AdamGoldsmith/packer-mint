@@ -7,7 +7,8 @@
     "iso_url": "http://www.mirrorservice.org/sites/www.linuxmint.com/pub/linuxmint.com/stable/18.1/linuxmint-18.1-cinnamon-64bit.iso",
     "iso_checksum": "b99f4b98a1b41737ded072dc1a7060ca32224e23236074790d4fc86b51009e3c",
     "iso_checksum_type": "sha256",
-    "scripts_dir": "scripts"
+    "scripts_dir": "scripts",
+    "ansible_dir": "ansible"
   },
 
   "builders": [{
@@ -38,7 +39,7 @@
 
     "vboxmanage": [
       ["modifyvm", "{{ .Name }}", "--description", "Standard build Linux Mint Cinnamon 18. Language & keyboard : UK. Timezone : London"],
-      ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}\\..\\images\\UK.bmp"],
+      ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}/../images/UK.bmp"],
       ["modifyvm", "{{ .Name }}", "--memory", "2048"],
       ["modifyvm", "{{ .Name }}", "--cpus", "1"],
       ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
@@ -63,12 +64,12 @@
     {
       "type": "shell",
       "execute_command": "echo '{{user `ssh_pass`}}' | sudo -S sh -c '{{ .Vars }} {{ .Path }}'",
-      "script": "{{user `scripts_dir`}}\\VBoxGuestAdditions.sh"
+      "script": "{{user `scripts_dir`}}/VBoxGuestAdditions.sh"
     },
     {
       "type": "ansible-local",
       "command": "ANSIBLE_NOCOWS=1 ANSIBLE_FORCE_COLOR=1 PYTHONUNBUFFERED=1 ansible-playbook",
-      "playbook_file": "ansible/playbooks/cinnamon18.yml"
+      "playbook_file": "{{user `ansible_dir`}}/playbooks/cinnamon18.yml"
     }
   ]
 }
