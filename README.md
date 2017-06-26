@@ -39,3 +39,6 @@ https://stackoverflow.com/questions/40697091/debianinstaller-not-started
 Another shout out to Federico Bertola for describing how to install ssh server on Mint 18
 https://github.com/fbertola/dev-box
 
+Thanks to dougm for examples of vmx_data parameters
+https://github.com/dougm/packer-ttylinux
+

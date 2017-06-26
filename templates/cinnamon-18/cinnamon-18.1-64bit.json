@@ -1,6 +1,5 @@
 {
   "variables": {
-    "headless": "",
     "ssh_username": "packer",
     "ssh_pass": "packer",
     "hostname": "packer-test",
@@ -11,7 +10,9 @@
     "iso_checksum": "b99f4b98a1b41737ded072dc1a7060ca32224e23236074790d4fc86b51009e3c",
     "iso_checksum_type": "sha256",
     "scripts_dir": "scripts",
-    "ansible_dir": "ansible"
+    "ansible_dir": "ansible",
+    "memsize": "2048",
+    "numcpus": "1"
   },
 
   "builders": [{
@@ -26,7 +27,7 @@
     "ssh_username": "{{user `ssh_username`}}",
     "ssh_password": "{{user `ssh_pass`}}",
     "ssh_wait_timeout": "10m",
-    "headless": "{{user `headless`}}",
+    "headless": "false",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
     "disk_size" : 10000,
     "boot_wait" : "5s",
@@ -43,8 +44,8 @@
     "vboxmanage": [
       ["modifyvm", "{{ .Name }}", "--description", "Standard build Linux Mint Cinnamon 18. Language & keyboard : UK. Timezone : London"],
       ["modifyvm", "{{ .Name }}", "--bioslogoimagepath", "{{ template_dir }}/../images/UK.bmp"],
-      ["modifyvm", "{{ .Name }}", "--memory", "2048"],
-      ["modifyvm", "{{ .Name }}", "--cpus", "1"],
+      ["modifyvm", "{{ .Name }}", "--memory", "{{user `memsize`}}"],
+      ["modifyvm", "{{ .Name }}", "--cpus", "{{user `numcpus`}}"],
       ["modifyvm", "{{ .Name }}", "--rtcuseutc", "on"],
       ["modifyvm", "{{ .Name }}", "--vram", "24"],
       ["modifyvm", "{{ .Name }}", "--vrde", "off"],
@@ -66,7 +67,7 @@
     "ssh_username": "{{user `ssh_username`}}",
     "ssh_password": "{{user `ssh_pass`}}",
     "ssh_wait_timeout": "10m",
-    "headless": "{{user `headless`}}",
+    "headless": "true",
     "shutdown_command": "echo {{user `ssh_pass`}} | sudo -S shutdown -P now",
     "disk_size" : 10000,
     "boot_wait" : "5s",
@@ -74,11 +75,19 @@
     "boot_command" : [
       "<esc><wait><tab><wait><leftCtrlOn>u<leftCtrlOff>",
       "/casper/vmlinuz initrd=/casper/initrd.lz",
-      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/mint18.seed",
+      " url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/mint18-vmware.seed",
       " automatic-ubiquity debug-ubiquity boot=casper quiet splash noprompt",
       " -- ",
       "<wait><enter>"
-    ]
+    ],
+    "vmx_data": {
+      "memsize": "{{user `memsize`}}",
+      "numvcpus": "{{user `numcpus`}}",
+      "mks.enable3d": "TRUE"
+    },
+    "vnc_disable_password": "true",
+    "vnc_port_min": "5910",
+    "vnc_port_max": "5910"
   }],
 
   "provisioners": [

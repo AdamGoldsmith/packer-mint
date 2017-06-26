@@ -1,0 +1,66 @@
+# Locale
+d-i debian-installer/locale string en_GB
+d-i console-setup/ask_detect boolean false
+d-i console-setup/layoutcode string gb
+ubiquity languagechooser/language-name select English
+ubiquity countrychooser/shortlist select GB
+ubiquity keyboard-configuration/layoutcode select gb
+ubiquity keyboard-configuration/modelcode select pc105
+ubiquity localechooser/supported-locales multiselect en_GB.UTF8
+ubiquity console-keymaps-at/keymap select gb
+ubiquity console-keymaps-at/variant select gb
+
+# Partitioning
+ubiquity partman-auto/disk string /dev/sda
+ubiquity partman-auto/method string regular
+d-i partman-lvm/device_remove_lvm boolean true
+d-i partman-md/device_remove_md boolean true
+d-i partman-auto/choose_recipe select atomic
+
+# This makes partman automatically partition without confirmation
+d-i partman-partitioning/confirm_write_new_label boolean true
+d-i partman/choose_partition select finish
+d-i partman/confirm boolean true
+d-i partman/confirm_nooverwrite boolean true
+
+# Network
+d-i netcfg/get_hostname string packer-test
+d-i netcfg/get_domain string unassigned-domain
+d-i netcfg/choose_interface select auto
+
+# Clock
+d-i time/zone string Europe/London
+
+# Packages, Mirrors, Image
+d-i mirror/country string UK
+d-i apt-setup/multiverse boolean true
+d-i apt-setup/restricted boolean true
+d-i apt-setup/universe boolean true
+
+# Users
+d-i passwd/user-fullname string packer
+d-i passwd/username string packer
+d-i passwd/user-password password packer
+d-i passwd/user-password-again password packer
+d-i user-setup/allow-password-weak boolean true
+d-i netcfg/get_hostname string packer-test
+d-i passwd/auto-login boolean true
+d-i user-setup/encrypt-home boolean false
+
+# Grub
+d-i grub-installer/grub2_instead_of_grub_legacy boolean true
+d-i grub-installer/only_debian boolean true
+d-i finish-install/reboot_in_progress note
+
+# Use non-free packages
+ubiquity ubiquity/use_nonfree boolean true
+
+ubiquity ubiquity/success_command \
+  string echo "auto ens33" >> /etc/network/interfaces; \
+    echo "iface ens33 inet dhcp" >> /etc/network/interfaces; \
+    ifup enp0s3; \
+    apt-get update -y; \
+    in-target apt-get install -y openssh-server;
+
+ubiquity ubiquity/reboot boolean true
+
